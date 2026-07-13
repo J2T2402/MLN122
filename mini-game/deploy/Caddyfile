@@ -1,0 +1,12 @@
+# Caddyfile — reverse proxy cho MLN122 (Hành Trình Định Hướng)
+# Đặt tại /etc/caddy/Caddyfile trên droplet, rồi: sudo systemctl reload caddy
+#
+# Caddy TỰ ĐỘNG: xin + gia hạn SSL (Let's Encrypt) và proxy WebSocket (wss://) —
+# KHÔNG cần cấu hình Upgrade/Connection thủ công như Nginx.
+#
+# Domain đã cấu hình sẵn: mln.aurabeur.site (nhớ trỏ A record về IP droplet trước khi reload).
+
+mln.aurabeur.site {
+	encode zstd gzip
+	reverse_proxy localhost:3000
+}
