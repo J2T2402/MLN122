@@ -66,7 +66,7 @@ export const VictoryScene: React.FC<VictorySceneProps> = ({ endgameData }) => {
 
   const winTeam = endgameData.winnerTeam || { teamId: 1, teamName: "Hồng San Hô", score: 0 };
   const sortedTeams = [...(endgameData.finalTeams || [])].sort((a, b) => a.rank - b.rank);
-  const mvpPlayer = endgameData.topPlayers?.[0] || { nickname: "Thủy Thủ", score: 0 };
+  const topThree = (endgameData.topPlayers || []).slice(0, 3);
 
   // 5 static cards from program for MÀN 10
   const summaryCards = [
@@ -164,25 +164,49 @@ export const VictoryScene: React.FC<VictorySceneProps> = ({ endgameData }) => {
       {/* Right Panel: MVP & Navigation */}
       <div className="flex-[3] bg-primary-900/40 rounded-2xl border border-primary-800 p-8 flex flex-col h-[500px] shadow-2xl backdrop-blur-sm justify-between">
         
-        {/* MVP display */}
-        <div className="flex flex-col gap-6 items-center text-center my-auto justify-center">
-          <div className="bg-yellow-500/10 text-yellow-500 p-4 rounded-full border border-yellow-500 shadow-lg animate-float">
-            <Star size={44} />
-          </div>
-          <div className="flex flex-col">
-            <span className="text-xs font-bold text-accent-500 font-mono tracking-widest uppercase mb-1">
-              👑 THỦY THỦ MVP CHUNG CUỘC 👑
-            </span>
-            <span className="text-3xl font-black font-display text-white mt-1 select-text">
-              {mvpPlayer.nickname}
-            </span>
-            {mvpPlayer.teamId && (
-              <TeamBadge teamId={mvpPlayer.teamId} className="scale-90 mt-2 mx-auto" />
-            )}
-            <span className="font-mono text-2xl font-black text-accent-500 mt-4 block">
-              ⚡ {mvpPlayer.score} điểm
+        {/* Top 3 players chung cuộc */}
+        <div className="flex flex-col gap-4 my-auto">
+          <div className="flex items-center justify-center gap-2 text-accent-500 mb-1">
+            <Star size={22} />
+            <span className="text-sm font-bold font-mono tracking-widest uppercase">
+              👑 TOP 3 THỦY THỦ XUẤT SẮC 👑
             </span>
           </div>
+
+          {topThree.length === 0 ? (
+            <div className="text-center text-primary-300 py-8">Chưa có dữ liệu người chơi</div>
+          ) : (
+            topThree.map((p: any, idx: number) => {
+              const medal = ["🥇", "🥈", "🥉"][idx];
+              const ring =
+                idx === 0
+                  ? "border-accent-500 bg-accent-500/10 shadow-glow"
+                  : idx === 1
+                  ? "border-primary-500 bg-primary-800/40"
+                  : "border-orange-700 bg-orange-900/20";
+              return (
+                <div
+                  key={p.playerId || idx}
+                  className={`flex items-center gap-3 p-3.5 rounded-xl border ${ring}`}
+                >
+                  <span className="text-3xl w-10 text-center flex-shrink-0">{medal}</span>
+                  <div className="flex flex-col flex-1 min-w-0">
+                    <span className="text-xl font-black font-display text-white truncate select-text leading-tight">
+                      {p.nickname}
+                    </span>
+                    {p.teamId && (
+                      <span className="mt-1">
+                        <TeamBadge teamId={p.teamId} className="scale-75 origin-left" />
+                      </span>
+                    )}
+                  </div>
+                  <span className="font-mono text-xl font-black text-accent-500 whitespace-nowrap flex-shrink-0">
+                    ⚡ {p.score}đ
+                  </span>
+                </div>
+              );
+            })
+          )}
         </div>
 
         {/* Gallery navigate button */}
